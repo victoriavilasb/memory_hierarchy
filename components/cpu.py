@@ -20,14 +20,14 @@ def cpu_process(request:str, cache:dict, data_memory:list) -> str:
     return find_address_in_cache(addr, cache)
   elif operation == OperationType.WRITE:
     data = instructions[2]
-    if not cache[addr.index].valid:
-      cache[addr.index].valid = 1
-      cache[addr.index].tag = addr.tag
-      cache[addr.index].data = data
-    else:
+    if cache[addr.index].valid:
       data_memory.append(cache[addr.index].data)
       cache[addr.index].data = data
       cache[addr.index].tag = addr.tag
+    else:
+      cache[addr.index].valid = 1
+      cache[addr.index].tag = addr.tag
+      cache[addr.index].data = data
     return OperationResult.WRITE
 
 def search_address_in_memory(address:Address, memory:list) -> bool:
@@ -39,5 +39,8 @@ def search_address_in_memory(address:Address, memory:list) -> bool:
 def find_address_in_cache(address:Address, cache:dict) -> OperationResult:
   if cache[address.index].tag == address.tag:
     return OperationResult.HIT
-  else:
-    return OperationResult.MISS
+
+  cache[address.index].tag = address.tag
+  cache[address.index].valid = 1
+  cache[address.index].data = address.full_address
+  return OperationResult.MISS
