@@ -1,10 +1,11 @@
-from common import to_bin
+from .common import to_bin
 from enum import Enum
-from address import Address, ADDRESS_SIZE
+from .address import Address, ADDRESS_SIZE
+from .cache import OperationResult
 
 class OperationType(Enum):
-  WRITE = 1
-  READ = 0
+  WRITE = "1"
+  READ = "0"
 
 def cpu_process(request:str, cache:dict, data_memory:list) -> str:
   instructions = request.split(" ")
@@ -15,7 +16,28 @@ def cpu_process(request:str, cache:dict, data_memory:list) -> str:
   operation = OperationType(instructions[1])
   
   data = ""
-  if operation == OperationType.WRITE:
+  if operation == OperationType.READ:
+    return find_address_in_cache(addr, cache)
+  elif operation == OperationType.WRITE:
     data = instructions[2]
+    if not cache[addr.index].valid:
+      cache[addr.index].valid = 1
+      cache[addr.index].tag = addr.tag
+      cache[addr.index].data = data
+    else:
+      data_memory.append(cache[addr.index].data)
+      cache[addr.index].data = data
+      cache[addr.index].tag = addr.tag
+    return OperationResult.WRITE
 
-  raise ValueError("Missing implementation")
+def search_address_in_memory(address:Address, memory:list) -> bool:
+  for m in memory:
+    if address.full_address == m:
+      return True
+  return False
+
+def find_address_in_cache(address:Address, cache:dict) -> OperationResult:
+  if cache[address.index].tag == address.tag:
+    return OperationResult.HIT
+  else:
+    return OperationResult.MISS

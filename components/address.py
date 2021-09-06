@@ -7,6 +7,7 @@ ADDRESS_SIZE = 13
 
 class Address:
   def __init__(self, address):
+    self.full_address = address
     self.offset = address[0:TAG_SIZE]
     self.index = address[TAG_SIZE:INDEX_SIZE+TAG_SIZE]
     self.tag = address[INDEX_SIZE+TAG_SIZE:ADDRESS_SIZE]

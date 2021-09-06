@@ -1,7 +1,13 @@
-from common import to_bin
-from address import INDEX_SIZE
+from .common import to_bin
+from .address import INDEX_SIZE
+from enum import Enum
 
 CACHE_SIZE = 64
+
+class OperationResult(Enum):
+  HIT = "H"
+  MISS = "M"
+  WRITE = "W"
 
 class CacheRow:
   def __init__(self) -> None:
