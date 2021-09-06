@@ -23,16 +23,21 @@ def main(filename):
     op_results[result] += 1
     request_result.append("{} {}".format(request, result.value))
 
+  rf = open("result.txt", "w")
+
   reads = op_results[OperationResult.MISS] + op_results[OperationResult.HIT]
-  print("READS: {}".format(reads))
-  print("WRITES: {}".format(op_results[OperationResult.WRITE]))
-  print("HITS: {}".format(op_results[OperationResult.HIT]))
-  print("MISSES: {}".format(op_results[OperationResult.MISS]))
-  print("HIT RATE: {0:.3}".format(op_results[OperationResult.HIT]/reads))
-  print("MISS RATE: {0:.3}\n".format(op_results[OperationResult.MISS]/reads))
+  rf.write("READS: {}\n".format(reads))
+  rf.write("WRITES: {}\n".format(op_results[OperationResult.WRITE]))
+  rf.write("HITS: {}\n".format(op_results[OperationResult.HIT]))
+  rf.write("MISSES: {}\n".format(op_results[OperationResult.MISS]))
+  rf.write("HIT RATE: {0:.3}\n".format(op_results[OperationResult.HIT]/reads))
+  rf.write("MISS RATE: {0:.3}\n\n".format(op_results[OperationResult.MISS]/reads))
+
 
   for r in request_result:
-    print(r)
+    rf.write("{}\n".format(r))
+
+  rf.close()
     
 if __name__ == "__main__":
   main(sys.argv[1])
